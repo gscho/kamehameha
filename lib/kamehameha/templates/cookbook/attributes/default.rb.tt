@@ -1,0 +1,11 @@
+default['hab_install'].tap do |hab|
+<%- @attrs['hosts'].each do |host| -%>
+  <%- host.each do |k,v| -%>
+  <%- if v.kind_of?(Array)-%>  
+  hab['<%= host['hostname']%>']['<%= k %>'] = <%= v %>
+  <%- else -%>  
+  hab['<%= host['hostname']%>']['<%= k %>'] = '<%= v %>'
+  <%- end -%>
+  <%- end -%>
+<%- end -%>
+end

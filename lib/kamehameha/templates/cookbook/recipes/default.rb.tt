@@ -1,0 +1,36 @@
+node['hab_install'].each do |host, hab|
+  <%- if options[:install_hab] -%>  
+  hab_install
+  <%- end -%>
+  
+  hab_service hab['package'] do
+    strategy hab['strategy']
+    topology hab['topology']
+    bind hab['bind'] unless hab['bind'].nil? || hab['bind'].empty?
+    service_group hab['group']
+    channel hab['channel']
+    bldr_url hab['bldr_url']
+    action :load
+    only_if do
+      host.eql? node['hostname']
+    end
+  end
+  
+  package_name = hab['package'].split('/')[1]
+  basename = File.basename hab['user_toml'] unless hab['user_toml'].nil?
+
+  directory 'user_config' do
+    path "/hab/user/#{package_name}/config"
+    recursive true
+    action :nothing
+  end
+
+  cookbook_file "/hab/user/#{package_name}/config/#{basename}" do
+    source basename
+    action :create
+    notifies :create, 'directory[user_config]', :before
+    not_if do
+      hab['user_toml'].nil? || !host.eql?(node['hostname'])
+    end
+  end
+end
