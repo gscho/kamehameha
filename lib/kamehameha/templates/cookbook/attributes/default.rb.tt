@@ -1,3 +1,8 @@
+
+default['derp']['channel'] = '<%= @attrs['channel'] %>'
+default['derp']['group'] = '<%= @attrs['group'] %>'
+default['derp']['ring'] = '<%= @attrs['ring'] %>'
+default['derp']['org'] = '<%= @attrs['org'] %>'
 default['hab_install'].tap do |hab|
 <%- @attrs['hosts'].each do |host| -%>
   <%- host.each do |k,v| -%>
