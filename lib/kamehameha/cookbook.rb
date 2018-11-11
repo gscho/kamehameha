@@ -5,7 +5,7 @@ module Kamehameha
   class Cookbook < Thor::Group
     include Thor::Actions
     
-    class_option :path, :default => './data.yml'
+    class_option :path, :default => './test.yml'
     class_option :install_hab, :default => 'false'
     def self.source_root
       File.join(File.dirname(__FILE__), 'templates')

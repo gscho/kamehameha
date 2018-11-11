@@ -2,7 +2,7 @@
   hab_install
   <%- end -%>
 
-  peers = node['global']['peers'].nil? '' : node['global']['peers'].join('--peer ').prepend('--peer ')
+  peers = node['global']['peers'].nil? '' : node['global']['peers'].join(' --peer ').prepend('--peer ')
   ring = node['global']['ring'].nil? '' : "--ring #{node['global']['ring']}"
   org = node['global']['org'].nil? '' : "--org #{node['global']['org']}"
   env = node['global']['env'].nil? '' : node['global']['env'].join(' ')

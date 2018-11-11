@@ -1,8 +1,27 @@
 
-default['derp']['channel'] = '<%= @attrs['channel'] %>'
-default['derp']['group'] = '<%= @attrs['group'] %>'
-default['derp']['ring'] = '<%= @attrs['ring'] %>'
-default['derp']['org'] = '<%= @attrs['org'] %>'
+<%- if @attrs['channel'] -%>  
+default['global']['channel'] = '<%= @attrs['channel'] %>'
+<%- else -%>
+default['global']['channel'] = 'default'
+<%- end -%>
+<%- if @attrs['group'] -%>  
+default['global']['group'] = '<%= @attrs['group'] %>'
+<%- else -%>
+default['global']['group'] = 'default'
+<%- end -%>
+<%- if @attrs['ring'] -%>  
+default['global']['ring'] = '<%= @attrs['ring'] %>'
+<%- end -%>
+<%- if @attrs['org'] -%>  
+default['global']['org'] = '<%= @attrs['org'] %>'
+<%- end -%>
+<%- if @attrs['peers'] -%>  
+default['global']['peers'] = <%= @attrs['peers'] %>
+<%- end -%>
+<%- if @attrs['env'] -%>  
+default['global']['env'] = <%= @attrs['env'] %>
+<%- end -%>
+
 default['hab_install'].tap do |hab|
 <%- @attrs['hosts'].each do |host| -%>
   <%- host.each do |k,v| -%>
