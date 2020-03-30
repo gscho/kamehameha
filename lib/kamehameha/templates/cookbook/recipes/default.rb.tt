@@ -1,15 +1,38 @@
-node['hab_install'].each do |host, hab|
   <%- if options[:install_hab] -%>  
   hab_install
   <%- end -%>
+
+  peers = node['global']['peers'].nil? '' : node['global']['peers'].join(' --peer ').prepend('--peer ')
+  ring = node['global']['ring'].nil? '' : "--ring #{node['global']['ring']}"
+  org = node['global']['org'].nil? '' : "--org #{node['global']['org']}"
+  env = node['global']['env'].nil? '' : node['global']['env'].join(' ')
+
+  systemd_unit 'hab-sup.service' do
+    content({Unit: {
+            Description: 'Habitat Supervisor',
+          },
+          Service: {
+            ExecStart: "/bin/hab run -A #{peers} #{ring} #{org}".strip,
+            Environment: env,
+            UMask: '0022',
+            TasksMax: 'infinity',
+            Restart: 'always',
+          },
+          Install: {
+            WantedBy: 'default.target',
+          }})
+    action [:create, :enable]
+  end
+
+node['hab_install'].each do |host, hab|
   
   hab_service hab['package'] do
     strategy hab['strategy']
     topology hab['topology']
     bind hab['bind'] unless hab['bind'].nil? || hab['bind'].empty?
-    service_group hab['group']
-    channel hab['channel']
-    bldr_url hab['bldr_url']
+    service_group node['global']['group']
+    channel node['global']['channel']
+    bldr_url node['global']['bldr_url']
     action :load
     only_if do
       host.eql? node['hostname']
